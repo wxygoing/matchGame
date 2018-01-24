@@ -1,44 +1,75 @@
-var xLength = 4;
-var yLength = 4;
-var width = 100;
-var heigth = 100;
-var photoLength = 50;
-var spaceLength = 20;
-var gameCells = {};
-var totalLength = xLength * yLength;
+var xLength = 4,
+    yLength = 4,
+    width = 100,
+    heigth = 100,
+    photoLength = 50,
+    spaceLength = 20,
+    gameCells = {},
+    totalLength = xLength * yLength,
 
-var count = 0;
-var lasterCell = null;
-var cellStatus = false;
-var step = 0;
-var starNumber = 3;
+	count = 0,
+    lasterCell = null,
+    cellStatus = false,
+    step = 0,
+    starNumber = 3;
 
 initArray();
+
+/**
+* @description init array
+* @returns
+*/
 function initArray() {
-	var index = 0;
-	var randomArray = shuffleArray();
+	var index = 0,
+	    randomArray = shuffleArray();
 	for (var i = 0; i < xLength; i ++) {
 		gameCells[i] = {};
-		for (var j = 0; j < yLength; j ++) {
+		for (var j = 0 ; j < yLength; j ++) {
 			gameCells[i][j] = initCell(randomArray[index++] % (totalLength / 2));
 		}
 	}
-	console.info(gameCells);
 	drawCells();
 }
 
+/**
+* @description cell object
+* @param {number} num
+* @returns {object} cell object
+*/
 function initCell (num) {
 	var cell = {
 		number: num,
-		status: 0 // four status
+		status: 0 // four status, 0: close, 1: first open, 2:second open, 3:success
 	}
 	return cell;
 }
 
+/**
+* @description use shuffle to get random array
+* @returns {object} random array
+*/
+function shuffleArray() {
+	var randomArray = {}, randomIndex, temp;
+	for (var i = 0; i < totalLength; i ++) {
+		randomArray[i] = i;
+	}
+	//var randomArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+	for (var i = totalLength - 1; i >= 0; i --) {
+		randomIndex = Math.floor(Math.random() * (i + 1));
+		temp = randomArray[randomIndex];
+		randomArray[randomIndex] = randomArray[i];
+		randomArray[i] = temp;
+	}
+	return randomArray;
+}
+
+/**
+* @description draw the table cells and render photos
+*/
 function drawCells() {
-	var mainContainer = document.getElementById('main');
-	var mainCells = document.getElementsByClassName('mainCell');
-	var length = mainCells.length;
+	var mainContainer = document.getElementById('main-container'),
+	    mainCells = document.getElementsByClassName('main-cell'),
+	    length = mainCells.length;
 	for(var i = 0; i < length; i++) {
 		mainContainer.removeChild(mainCells[0]);
 	}
@@ -47,8 +78,8 @@ function drawCells() {
 		for (var j = 0; j < yLength; j ++) {
 			//main cell
 			var mainCell = createCell(i, j);
-			mainCell.id = 'mainCell_' + i + '_' + j;
-			mainCell.className = 'mainCell';
+			mainCell.id = 'main-cell-' + i + '-' + j;
+			mainCell.className = 'main-cell';
 			mainCell.style.top = getPosition(i) + 'px';
 			mainCell.style.left = getPosition(j) + 'px';
 			mainCell.addEventListener( 'click', function(){
@@ -57,14 +88,14 @@ function drawCells() {
 
 			//border cell
 			var cell = createCell(i, j);
-			cell.id = 'borderCell_' + i + '_' + j;
-			cell.className = 'borderCell';
+			cell.id = 'border-cell-' + i + '-' + j;
+			cell.className = 'border-cell';
 			mainCell.appendChild(cell);
 
 			//photo cell
 			var photoCell = createCell(i, j);
-			photoCell.id = 'photoCell_' + i + '_' + j;
-			photoCell.className = 'photoCell';
+			photoCell.id = 'photo-cell-' + i + '-' + j;
+			photoCell.className = 'photo-cell';
 			var imageCell = createImage(gameCells[i][j]);
 			photoCell.appendChild(imageCell);
 			mainCell.appendChild(photoCell);
@@ -77,7 +108,7 @@ function drawCells() {
         refreshAction(this);
     }, false);
 
-    var playAgain = document.getElementById('playAgain');
+    var playAgain = document.getElementById('play-again');
 	playAgain.addEventListener('click', function(){
         refreshAction(this);
     }, false);
@@ -100,55 +131,32 @@ function createImage(mapCell) {
 	return imageCell;
 }
 
-function refreshAction(border) {
-	count = 0;
-	lasterCell = null;
-	cellStatus = false;
-	step = 0;
-	starNumber = 3;
-	var stepNum = document.getElementById('move');
-	stepNum.innerHTML = step;
-	var move = document.getElementById('move');
-    move.innerHTML = step;
-	var success = document.getElementById('successContainer');
-	success.style.display = 'none';
-	var main = document.getElementById('main');
-	main.style.display = 'block';
-	var body = document.getElementById('headContainer');
-	body.style.display = 'block';
-	
-	var stars = document.getElementsByClassName('fa-star-o');
-	var starsLength = stars.length;
-	for(var i = 0; i < starsLength; i++) {
-		stars[0].className = 'fa fa-star';
-	}
-	initArray();
-}
-
+/**
+* @description deal with the click action,show the photo
+* @param {object} the border object
+* @returns
+*/
 function clickAction(border) {
 
-	var borderX = getIndex(border.id, true);
-	var borderY = getIndex(border.id, false);
-	var gameCell = gameCells[borderX][borderY];
+	var borderX = getIndex(border.id, true),
+		borderY = getIndex(border.id, false),
+		gameCell = gameCells[borderX][borderY];
     if (gameCell.status === 3) return;
 
 	if (!lasterCell) {
 		gameCell.status = 1;
-		//gameCell.status = 1;
 		cellStatus = true;
 		firstOpenAnimation(border);
 		lasterCell = border;
 		step ++;
 		freshMoves(step);
 	} else {
-		var lasterX = getIndex(lasterCell.id, true);
-		var lasterY = getIndex(lasterCell.id, false);
-		var lasterGameCell = gameCells[lasterX][lasterY];
+		var lasterX = getIndex(lasterCell.id, true),
+			lasterY = getIndex(lasterCell.id, false),
+			lasterGameCell = gameCells[lasterX][lasterY];
 
 		if (lasterGameCell.status === 2 || lasterGameCell.status === 3) {
 			gameCell.status = 1;
-			//lasterGameCell.status = 1;
-			//cellStatus = true;
 			firstOpenAnimation(border);
 			step ++;
 			freshMoves(step);
@@ -158,12 +166,9 @@ function clickAction(border) {
 				count++;
 				gameCell.status = 3;
 				lasterGameCell.status = 3;
-				//cellStatus = false;
 				rightAnimation(border, lasterCell);
 			} else { 	
-				//gameCells[lasterX][lasterY].status = 2;
 				gameCell.status = 2;
-				//cellStatus = false;
 				wrongAnimation(border, lasterCell);	
 			}
 			step ++;
@@ -174,22 +179,74 @@ function clickAction(border) {
 	}	
 }
 
+/**
+* @description refresh the moves and the style of stars
+* @param {int} the number of moves
+* @returns
+*/
 function freshMoves(step) {
-	var move = document.getElementById('move');
+	var star, move = document.getElementById('move');
     move.innerHTML = step;
-    if (step === 17) {
- 		var star = document.getElementById('star_'+ 3);
+    if (step === 24) {
+ 		star = document.getElementById('star-'+ 3);
  		star.className = 'fa fa-star-o';
  		starNumber--;
-    } else if (step === 33) {
-		var star = document.getElementById('star_'+ 2);
+    } else if (step === 32) {
+		star = document.getElementById('star-'+ 2);
  		star.className = 'fa fa-star-o';
  		starNumber--;
-    } else if (step === 65){
-    	var star = document.getElementById('star_'+ 1);
+    } else if (step === 40){
+    	star = document.getElementById('star-'+ 1);
  		star.className = 'fa fa-star-o';
  		starNumber--;
     }
+}
+
+/**
+* @description refresh action to reset some data and restart the game
+* @param {object} border object
+* @returns
+*/
+function refreshAction(border) {
+	step = 0;
+	count = 0;
+	starNumber = 3;
+	lasterCell = null;
+	cellStatus = false;
+	
+	var move = document.getElementById('move');
+    move.innerHTML = step;
+	var success = document.getElementById('success-container');
+	success.style.display = 'none';
+	var main = document.getElementById('main-container');
+	main.style.display = 'block';
+	var body = document.getElementById('head-container');
+	body.style.display = 'block';
+	
+	var stars = document.getElementsByClassName('fa-star-o'),
+		starsLength = stars.length;
+	for(var i = 0; i < starsLength; i++) {
+		stars[0].className = 'fa fa-star';
+	}
+	initArray();
+}
+
+/**
+* @description when the sucess,show the success container
+* @param
+* @returns
+*/
+function successful() {
+	var stepNum = document.getElementById('step');
+	stepNum.innerHTML = step;
+	var starNum = document.getElementById('star-num');
+	starNum.innerHTML = starNumber;
+	var success = document.getElementById('success-container');
+	success.style.display = 'block';
+	var main = document.getElementById('main-container');
+	main.style.display = 'none';
+	var body = document.getElementById('head-container');
+	body.style.display = 'none';
 }
 
 function firstOpenAnimation(border) {
@@ -203,33 +260,15 @@ function rightAnimation(border, lasterCell) {
 	border.children[1].style.background = '#18d8bb';
 	lasterCell.children[0].style.opacity = 0;
 	border.children[0].style.opacity = 0;
-	addClass(border, ' flipped');
+	addClass(border, 'flipped');
 	
-    addClass(border, ' right-animation');
-	addClass(lasterCell, ' right-animation');
+    addClass(border, 'right-animation');
+	addClass(lasterCell, 'right-animation');
 	setTimeout(function() {
 		if (count === 8) {
-			//alert('success');
 			successful();
 		}
 	},  100);	
-}
-
-function successful() {
-	var stepNum = document.getElementById('step');
-	stepNum.innerHTML = step;
-	var starNum = document.getElementById('starNum');
-	starNum.innerHTML = starNumber;
-	var success = document.getElementById('successContainer');
-	success.style.display = 'block';
-	var main = document.getElementById('main');
-	main.style.display = 'none';
-	var body = document.getElementById('headContainer');
-	body.style.display = 'none';
-	setTimeout(function(){
-		var spinner = document.getElementById('spinner');
-		removeClass(spinner, 'fa-pulse');
-	}, 300);
 }
 
 function wrongAnimation(border, lasterCell) {
@@ -238,8 +277,8 @@ function wrongAnimation(border, lasterCell) {
     border.children[0].style.opacity = 0;
     lasterCell.children[1].style.background = '#eb4d3f';
     border.children[1].style.background = '#eb4d3f';
-    addClass(border, ' flipped');
-    addClass(border, ' wrong-aniamtion');
+    addClass(border, 'flipped');
+    addClass(border, 'wrong-aniamtion');
     addClass(lasterCell, ' wrong-aniamtion');	
 
 	setTimeout(function() {
@@ -248,40 +287,47 @@ function wrongAnimation(border, lasterCell) {
 		removeClass(lasterCell, 'wrong-aniamtion');
 		removeClass(border, 'wrong-aniamtion');
 		removeClass(lasterCell, 'flipped');
-		removeClass(border, ' flipped');
+		removeClass(border, 'flipped');
 	}, 500);
 }
 
-//shuffle
-function shuffleArray() {
-	var randomArray = {};
-	for (var i = 0; i < totalLength; i ++) {
-		randomArray[i] = i;
-	}
-	//var randomArray = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-	for (var i = totalLength - 1; i >= 0; i --) {
-		var randomIndex = Math.floor(Math.random() * (i + 1));
-		var temp = randomArray[randomIndex];
-		randomArray[randomIndex] = randomArray[i];
-		randomArray[i] = temp;
-	}
-	return randomArray;
-}
-
+/**
+* @description get the cell position
+* @param {number} index
+* @returns {number} the position data
+*/
 function getPosition(index) {
 	return index * width + (index + 1) * spaceLength;
 }
 
-
-//////
+/**
+* @description check the class name existed
+* @param {objec} DOM object
+* @param {string} the string of calss name
+* @returns {bool} true or false
+*/
 function hasClass(obj, className) {
 	return obj.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
 }
+
+/**
+* @description add a class name for DOM object
+* @param {objec} border object
+* @param {string} the string of calss name
+* @returns {string} the new class name
+*/
 function addClass(obj, className) {
 	if (!hasClass(obj, className)) {
 		return obj.className += ' ' +className;
 	}
 }
+
+/**
+* @description remove a class name for DOM object
+* @param {objec} border object
+* @param {string} the string of calss name
+* @returns {string} the new class name
+*/
 function removeClass(obj, className) {
 	if (hasClass(obj, className)) {
 		var regClassName = new RegExp('(\\s|^)' + className + '(\\s|$)');
@@ -289,20 +335,14 @@ function removeClass(obj, className) {
 		return obj.className;
 	}
 }
-function toggleClass(obj, className) {
-	if (hasClass(obj, className)) {
-		removeClass(obj, className);
-	} else {
-		addClass(obj, className);
-	}
-}
 
+/**
+* @description get the index by the class name
+* @param {string} the class name
+* @param {bool} if isFirst is true take the first number,else second number
+* @returns {number} the index
+*/
 function getIndex(str, isFirst) {
-	var strArray = str.split('_');
-	return isFirst ? strArray[1] : strArray[2];
-}
-
-function getNumber(str) {
-	var strArray = str.split('_');
-	return gameCells[strArray[1]][strArray[2]];
+	var strArray = str.split('-');
+	return isFirst ? strArray[2] : strArray[3];
 }

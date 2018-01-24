@@ -2,43 +2,40 @@
 <html>
     <head>
     	<meta charset="UTF-8">
-		<title>match game</title>
-		<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
-    	<link rel="stylesheet" type="text/css" href="css/game.css">
-    	
+		<title>Matching Game</title>
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+    	<link rel="stylesheet" href="css/game.css">	
     </head>
     <body>
-    	<div id = "game">
-    		<div id = "headContainer">
-				<div id = "titleContainer">
+    	<div id="game" class="game">
+    		<div id="head-container" class="head-container">
+				<div id="title-container" class="title-container">
 	    			Matching Game
 		    	</div>
-		    	<div id = "starContainer">
-		    		<span class = "star"><i id = "star_1" class="fa fa-star"></i></span>
-		    		<span class = "star"><i id = "star_2" class="fa fa-star"></i></span>
-		    		<span class = "star"><i id = "star_3" class="fa fa-star"></i></span>
-		    		<span>&ensp;<span id = "move"></span> moves</span>
-		    		<span id = "refresh"><i class="fa fa-refresh"></i></span>
+		    	<div id="star-container" class="star-container">
+		    		<span class = "star"><i id ="star-1" class="fa fa-star"></i></span>
+		    		<span class = "star"><i id ="star-2" class="fa fa-star"></i></span>
+		    		<span class = "star"><i id ="star-3" class="fa fa-star"></i></span>
+		    		<span>&ensp;<span id ="move"></span> moves</span>
+		    		<span><i id ="refresh" class="fa fa-refresh"></i></span>
 		    	</div>
     		</div>
-	        <div id = "bodyContainer">
-	        	<div id = "successContainer">
-	        		<i id="spinner" class="fa fa-spinner fa-pulse fa-2x"></i>
+	        <div id="body-container" class="body-container">
+	        	<div id="success-container" class="success-container">
 	    			<h3>
 	    				Cougratulations! You Won!
 	    			</h3>
 	    			<p>
-	    				With <span id="step"></span> Moves and <span id='starNum'></span> Stars.
+	    				With <span id="step"></span> Moves and <span id='star-num' class='star-num'></span> Stars.
 	    			</p>
 	    			<p class="p2">
 	    				Woooooo!
 	    			</p>
-	    			<button id="playAgain" name="button">Play Again!</button>
+	    			<button id="play-again" class="play-again" name="button">Play Again!</button>
 	    		</div>	
-	    		<div id = "main"></div>	
+	    		<div id="main-container" class="main-container"></div>	
 	        </div>
 	    	</div>
-    	
     </body>
-    <script type="text/javascript" src ="js/game.js"></script>
+    <script src ="js/game.js"></script>
 </html> 
