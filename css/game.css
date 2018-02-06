@@ -19,7 +19,9 @@
 	-ms-box-shadow:10px 10px 25px #abaaae;
 	-o-box-shadow:10px 10px 25px #abaaae;
 	box-shadow: 10px 10px 25px #abaaae;
-	
+
+	#outline: none;
+	border-width: 0;
 	border-radius: 10px;
 	position: relative;
 }
@@ -94,19 +96,18 @@
  .success-container {
  	display: none;
  	margin: 0 auto;
- 	width: 300px;
+ 	width: 400px;
  	left: 100px;
  	padding-top:200px;
  	position: relative;
  }
 
-  p { 
-  	left: 30px;
+  h3 {
+  	left: 40px;
 	position: relative;
   }
-
-  .p2 { 
-  	left: 80px;
+  .p2, .play-again {
+  	left: 100px;
 	position: relative;
   }
 
@@ -122,8 +123,16 @@
  	margin: 0 auto;
  	width: 200px;
  	position: relative;
- 	padding: 20px;
+ 	padding: 10px;
  	font: 25px Arial;
+ }
+
+ .timer-container {
+	margin: 0 auto;
+ 	width: 100px;
+ 	padding: 10px;
+ 	position: relative;
+ 	font: 20px Arial;
  }
 
  .star-container{
@@ -137,7 +146,7 @@
 }
 
 .play-again {
-	background-color: #4CAF50; 
+	background-color: #4CAF50;
     border: none;
     border-radius: 4px;
     height: 30px;
@@ -146,8 +155,6 @@
     text-decoration: none;
     display: inline-block;
     font: 12px  Arial;
-    left: 70px;
-	position: relative;
 }
 
  @keyframes scale-animation {
@@ -179,12 +186,12 @@
 		-o-transform: scale(1.1, 0.9);
         transform: scale(1.1, 0.9);
     }
-    
+
 }
 
 
 @keyframes rotate-animation {
-	
+
    20% {
    		-webkit-transform: rotate(12deg);
 		-moz-transform: rotate(12deg);
